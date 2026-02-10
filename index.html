@@ -1,0 +1,342 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2867
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 <!doctype html>\
+<html lang="en">\
+<head>\
+  <meta charset="utf-8" />\
+  <meta name="viewport" content="width=device-width,initial-scale=1" />\
+  <title>Shopping Order Program</title>\
+  <style>\
+    :root \{ color-scheme: light; \}\
+    body \{\
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;\
+      margin: 0;\
+      background: #f6f7fb;\
+      color: #111;\
+    \}\
+    .wrap \{\
+      max-width: 900px;\
+      margin: 40px auto;\
+      padding: 0 16px;\
+    \}\
+    .card \{\
+      background: #fff;\
+      border: 1px solid #e8e8ee;\
+      border-radius: 14px;\
+      box-shadow: 0 8px 24px rgba(0,0,0,.06);\
+      padding: 18px;\
+    \}\
+    header h1 \{ margin: 0 0 6px; font-size: 22px; \}\
+    header p \{ margin: 0; color: #555; \}\
+\
+    .grid \{\
+      display: grid;\
+      grid-template-columns: 1.4fr .8fr .8fr auto;\
+      gap: 10px;\
+      margin-top: 14px;\
+    \}\
+    label \{ display:block; font-size: 12px; color: #555; margin-bottom: 6px; \}\
+    input \{\
+      width: 100%;\
+      box-sizing: border-box;\
+      padding: 10px 12px;\
+      border-radius: 10px;\
+      border: 1px solid #d9d9e3;\
+      outline: none;\
+      font-size: 14px;\
+    \}\
+    input:focus \{ border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,.15); \}\
+    button \{\
+      border: 0;\
+      border-radius: 10px;\
+      padding: 10px 12px;\
+      font-weight: 600;\
+      cursor: pointer;\
+      font-size: 14px;\
+      white-space: nowrap;\
+    \}\
+    .btn-primary \{ background: #7c3aed; color: #fff; \}\
+    .btn-primary:hover \{ filter: brightness(0.95); \}\
+    .btn-ghost \{ background: #f0f0f7; color: #111; \}\
+    .btn-ghost:hover \{ background: #e8e8f4; \}\
+    .btn-danger \{ background: #ef4444; color: #fff; \}\
+    .btn-danger:hover \{ filter: brightness(0.95); \}\
+\
+    .row \{\
+      display:flex;\
+      gap: 10px;\
+      margin-top: 14px;\
+      flex-wrap: wrap;\
+      align-items: center;\
+    \}\
+\
+    .notice \{\
+      margin-top: 12px;\
+      padding: 10px 12px;\
+      border-radius: 10px;\
+      background: #fff7ed;\
+      border: 1px solid #fed7aa;\
+      color: #7c2d12;\
+      display: none;\
+    \}\
+\
+    table \{\
+      width: 100%;\
+      border-collapse: collapse;\
+      margin-top: 16px;\
+      overflow: hidden;\
+      border-radius: 12px;\
+      border: 1px solid #ececf3;\
+    \}\
+    thead th \{\
+      text-align: left;\
+      font-size: 12px;\
+      letter-spacing: .02em;\
+      text-transform: uppercase;\
+      color: #555;\
+      background: #fafafe;\
+      padding: 10px;\
+      border-bottom: 1px solid #ececf3;\
+    \}\
+    tbody td \{\
+      padding: 10px;\
+      border-bottom: 1px solid #f0f0f7;\
+      vertical-align: middle;\
+    \}\
+    tbody tr:last-child td \{ border-bottom: 0; \}\
+\
+    .right \{ text-align: right; \}\
+    .muted \{ color: #666; \}\
+    .totals \{\
+      display: grid;\
+      grid-template-columns: 1fr auto;\
+      gap: 8px;\
+      margin-top: 14px;\
+      padding-top: 12px;\
+      border-top: 1px solid #eee;\
+    \}\
+    .totals div \{ padding: 2px 0; \}\
+    .totals .grand \{ font-size: 18px; font-weight: 800; \}\
+\
+    @media (max-width: 760px) \{\
+      .grid \{ grid-template-columns: 1fr 1fr; \}\
+      .grid .span2 \{ grid-column: span 2; \}\
+    \}\
+  </style>\
+</head>\
+\
+<body>\
+  <div class="wrap">\
+    <div class="card">\
+      <header>\
+        <h1>Shopping Order Program</h1>\
+        <p id="statusText" class="muted">Please start your order!</p>\
+      </header>\
+\
+      <div class="grid" aria-label="Add item form">\
+        <div>\
+          <label for="itemName">Item name</label>\
+          <input id="itemName" type="text" placeholder="e.g., Milk" />\
+        </div>\
+\
+        <div>\
+          <label for="itemQty">Quantity</label>\
+          <input id="itemQty" type="number" min="1" step="1" placeholder="e.g., 2" />\
+        </div>\
+\
+        <div>\
+          <label for="itemPrice">Price per item ($)</label>\
+          <input id="itemPrice" type="number" min="0" step="0.01" placeholder="e.g., 3.49" />\
+        </div>\
+\
+        <div class="span2" style="display:flex;align-items:end;">\
+          <button id="addBtn" class="btn-primary" style="width:100%;">Add item</button>\
+        </div>\
+      </div>\
+\
+      <div id="notice" class="notice" role="alert"></div>\
+\
+      <table aria-label="Order table">\
+        <thead>\
+          <tr>\
+            <th style="width:36%;">Item</th>\
+            <th class="right" style="width:12%;">Qty</th>\
+            <th class="right" style="width:18%;">Unit Price</th>\
+            <th class="right" style="width:18%;">Line Total</th>\
+            <th style="width:16%;">Action</th>\
+          </tr>\
+        </thead>\
+        <tbody id="orderBody">\
+          <tr id="emptyRow">\
+            <td colspan="5" class="muted">No items yet. Add your first item above.</td>\
+          </tr>\
+        </tbody>\
+      </table>\
+\
+      <div class="totals" aria-label="Totals">\
+        <div class="muted">Total different items added:</div>\
+        <div id="totalLineItems" class="right">0</div>\
+\
+        <div class="muted">Total quantity (all items):</div>\
+        <div id="totalUnits" class="right">0</div>\
+\
+        <div class="muted grand">TOTAL PRICE:</div>\
+        <div id="grandTotal" class="right grand">$0.00</div>\
+      </div>\
+\
+      <div class="row">\
+        <button id="completeBtn" class="btn-primary">Complete order</button>\
+        <button id="clearBtn" class="btn-ghost">Clear all</button>\
+      </div>\
+\
+      <div id="finalMessage" class="notice" style="margin-top:14px;"></div>\
+    </div>\
+  </div>\
+\
+  <script>\
+    // State: list of \{ name, qty, price \}\
+    let orders = [];\
+\
+    const el = (id) => document.getElementById(id);\
+    const itemName = el("itemName");\
+    const itemQty = el("itemQty");\
+    const itemPrice = el("itemPrice");\
+    const addBtn = el("addBtn");\
+    const clearBtn = el("clearBtn");\
+    const completeBtn = el("completeBtn");\
+    const orderBody = el("orderBody");\
+    const emptyRow = el("emptyRow");\
+    const notice = el("notice");\
+    const statusText = el("statusText");\
+    const finalMessage = el("finalMessage");\
+\
+    const totalLineItems = el("totalLineItems");\
+    const totalUnits = el("totalUnits");\
+    const grandTotal = el("grandTotal");\
+\
+    function money(n) \{\
+      return `$$\{n.toFixed(2)\}`;\
+    \}\
+\
+    function showNotice(msg) \{\
+      notice.textContent = msg;\
+      notice.style.display = "block";\
+      setTimeout(() => (notice.style.display = "none"), 2500);\
+    \}\
+\
+    function updateStatus() \{\
+      statusText.textContent =\
+        orders.length === 0 ? "Please start your order!" : "Please continue adding items!";\
+    \}\
+\
+    function render() \{\
+      // Clear old rows (keep emptyRow handling)\
+      orderBody.innerHTML = "";\
+      if (orders.length === 0) \{\
+        orderBody.appendChild(emptyRow);\
+      \} else \{\
+        orders.forEach((o, idx) => \{\
+          const tr = document.createElement("tr");\
+\
+          const lineTotal = o.qty * o.price;\
+\
+          tr.innerHTML = `\
+            <td>$\{escapeHtml(o.name)\}</td>\
+            <td class="right">$\{o.qty\}</td>\
+            <td class="right">$\{money(o.price)\}</td>\
+            <td class="right">$\{money(lineTotal)\}</td>\
+            <td>\
+              <button class="btn-danger" data-remove="$\{idx\}">Remove</button>\
+            </td>\
+          `;\
+          orderBody.appendChild(tr);\
+        \});\
+      \}\
+\
+      // Totals\
+      const lineItems = orders.length;\
+      const units = orders.reduce((s, o) => s + o.qty, 0);\
+      const total = orders.reduce((s, o) => s + o.qty * o.price, 0);\
+\
+      totalLineItems.textContent = String(lineItems);\
+      totalUnits.textContent = String(units);\
+      grandTotal.textContent = money(total);\
+\
+      updateStatus();\
+    \}\
+\
+    function escapeHtml(str) \{\
+      return String(str)\
+        .replaceAll("&", "&amp;")\
+        .replaceAll("<", "&lt;")\
+        .replaceAll(">", "&gt;")\
+        .replaceAll('"', "&quot;")\
+        .replaceAll("'", "&#039;");\
+    \}\
+\
+    function addItem() \{\
+      finalMessage.style.display = "none";\
+      const name = itemName.value.trim();\
+      const qty = Number(itemQty.value);\
+      const price = Number(itemPrice.value);\
+\
+      if (!name) return showNotice("Item name is required.");\
+      if (!Number.isFinite(qty) || qty <= 0 || !Number.isInteger(qty))\
+        return showNotice("Quantity must be a whole number greater than 0.");\
+      if (!Number.isFinite(price) || price < 0)\
+        return showNotice("Price must be a number 0 or higher.");\
+\
+      orders.push(\{ name, qty, price \});\
+\
+      // Clear inputs for next entry\
+      itemName.value = "";\
+      itemQty.value = "";\
+      itemPrice.value = "";\
+      itemName.focus();\
+\
+      render();\
+    \}\
+\
+    addBtn.addEventListener("click", addItem);\
+\
+    // Enter key to add (when user is in any input)\
+    [itemName, itemQty, itemPrice].forEach(inp => \{\
+      inp.addEventListener("keydown", (e) => \{\
+        if (e.key === "Enter") addItem();\
+      \});\
+    \});\
+\
+    orderBody.addEventListener("click", (e) => \{\
+      const btn = e.target.closest("button[data-remove]");\
+      if (!btn) return;\
+      const idx = Number(btn.getAttribute("data-remove"));\
+      orders.splice(idx, 1);\
+      render();\
+    \});\
+\
+    clearBtn.addEventListener("click", () => \{\
+      orders = [];\
+      finalMessage.style.display = "none";\
+      render();\
+    \});\
+\
+    completeBtn.addEventListener("click", () => \{\
+      if (orders.length === 0) \{\
+        showNotice("Add at least one item before completing the order.");\
+        return;\
+      \}\
+      const total = orders.reduce((s, o) => s + o.qty * o.price, 0);\
+      finalMessage.textContent = `Thank you for completing your order, good bye! TOTAL PRICE: $\{money(total)\}`;\
+      finalMessage.style.display = "block";\
+    \});\
+\
+    render();\
+  </script>\
+</body>\
+</html>\
+}
